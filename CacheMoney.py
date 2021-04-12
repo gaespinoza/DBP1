@@ -123,9 +123,8 @@ def transcript():
             classes = []
         classes.append(f"{row[4]}-{row[5]} {row[9]} ({row[8]}) {row[2]}")
         i+=1
-
-    	quality += (grades[row[2]] * float(row[8]))
-    	credits_tot += (float(row[8]))
+        quality += (grades[row[2]] * float(row[8]))
+        credits_tot += (float(row[8]))
     print(f"{sem} {sem_gpa}")
     for c in classes:
         print("  ",c)
