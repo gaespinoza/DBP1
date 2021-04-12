@@ -114,7 +114,7 @@ def transcript():
 
     for row in cur:
         if i == 0:
-            print(f"Student ID: {row[3]}")
+            print(f"\nStudent ID: {row[3]}")
             print(f"{row[6]}, {row[7]}")
         if row[0] != cur_sem:
             if i != 0:
@@ -136,7 +136,7 @@ def transcript():
     for c in classes:
         print("  ",c)
 
-    print(f"\nCumulative GPA {round(quality/credits_tot,2)}")
+    print(f"\nCumulative GPA {round(quality/credits_tot,2)}\n")
     
     
 
