@@ -25,7 +25,7 @@ def advisor_list():
     cur.execute(query)
     print("Advisor List!")
     for advice in cur:
-        print(advice[0], advice[1], advice[2]])
+        print(advice[0], advice[1], advice[2])
     
 
 def hire():
