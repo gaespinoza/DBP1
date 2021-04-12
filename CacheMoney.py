@@ -100,12 +100,12 @@ def transcript():
         print(e)
         return
 
-    quality_tot = 0
+    credits_tot = 0
     quality = 0
     for row in cur:
     	quality += (grades[row[2]] * float(row[8]))
-    	quality_tot += (4 * float(row[8]))
-    print(f"Cumulative GPA {quality/quality_tot}")
+    	credits_tot += (float(row[8]))
+    print(f"Cumulative GPA {quality/credits_tot}")
     
     
 
