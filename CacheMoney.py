@@ -50,6 +50,8 @@ def hire():
         print("ERROR - ID value not numeric")
     elif not new_salary.isnumeric():
         print("ERROR - Salary value not numeric")
+    elif not new_name.isalpha():
+        print("ERROR - Name is not alphabetical")
     else:
         #Check uniqueness
         q1 = "select * from instructor where id = %s;"
@@ -60,7 +62,7 @@ def hire():
         #Check if department exists
         q2 = "select * from department where dept_name = %s;"
         cur.execute(q2, (new_dept_name,))
-        if len(cur) == 0:
+        if cur.rowcount == 0:
             print("ERROR - Department does not exist")
 
 
