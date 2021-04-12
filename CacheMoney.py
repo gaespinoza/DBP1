@@ -5,8 +5,8 @@ conn = psycopg2.connect(host="localhost", port=5432, \
 cur = conn.cursor()
 
 def menu_selection():
-    return input("Please Select a Number:" \
-        "\n1 - Generate Advisor List \n" \ 
+    return input("Please Select a Number: \n" \
+        "1 - Generate Advisor List \n" \
         "2 - Hire New Instructor \n" \
         "3 - Generate Transcript \n" \
         "4 - Generate Course List \n" \
