@@ -26,6 +26,7 @@ def advisor_list():
 
     cur.execute(query)
     print("Advisor List!")
+    print(cur.description)
     for advice in cur:
         print(advice[0], advice[1], advice[2])
     
@@ -45,7 +46,9 @@ def register():
 inp = -1
 while inp != "0":
     inp = menu_selection()
-    if inp == "1":
+    if inp == "0":
+        break
+    elif inp == "1":
         advisor_list()
     elif inp == "2":
         hire()
