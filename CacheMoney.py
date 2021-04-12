@@ -90,7 +90,7 @@ def transcript():
     #transcript query
     tq = "select * from " \
         "(select T.semester, T.year, T.grade, T.id, T.course_id, T.sec_id, " \
-        "S.name, S.dept_name, C.credits from student as S " \
+        "S.name, S.dept_name, C.credits, C.title from student as S " \
         "join takes as T on S.id=T.id join course as C on T.course_id=C.course_id)" \
         " as Q where Q.id=%s order by Q.year, Q.semester desc;"
 
@@ -102,9 +102,34 @@ def transcript():
 
     credits_tot = 0
     quality = 0
+
+    cur_sem = None
+    i = 0
+    sem_gpa = 0
+    print(f"Student ID: {t[0][3]}")
+    print(f"{t[0][6]}, {t[0][7]}")
+    sem = ''
+    classes = []
+
     for row in cur:
+        if row[0] != cur_sem:
+            if i != 0:
+                print(f"{sem} {sem_gpa}")
+                for c in classes:
+                    print("  ",c)
+            sem = f"{row[0]} {row[1]}"
+            cur_sem = row[0]
+            sem_gpa = 0
+            classes = []
+        classes.append(f"{row[4]}-{row[5]} {row[9]} ({row[8]}) {row[2]}")
+        i+=1
+
     	quality += (grades[row[2]] * float(row[8]))
     	credits_tot += (float(row[8]))
+    print(f"{sem} {sem_gpa}")
+    for c in classes:
+        print("  ",c)
+
     print(f"Cumulative GPA {quality/credits_tot}")
     
     
