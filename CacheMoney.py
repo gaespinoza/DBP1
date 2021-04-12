@@ -1,6 +1,6 @@
 import psycopg2
 
-conn = psycopg2.connect(host="localhost", port=11525, \
+conn = psycopg2.connect(host="localhost", port=5432, \
     dbname="small_example", user="jwdeve")
 cur = conn.cursor()
 
@@ -71,6 +71,10 @@ def hire():
     insert_query = "insert into instructor values (%s, %s, %s, %s);"
     try:
         cur.execute(insert_query, (new_id, new_name, new_dept_name, new_salary,))
+        check = "select * from instructor;"
+        cur.execute(check)
+        for row in cur:
+            print(row[0], row[1], row[2], row[3])
     except Exception as e:
         print(e)
     print("Hire New Instructor!")
