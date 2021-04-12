@@ -1,6 +1,6 @@
 import psycopg2
 
-conn = psycopg2.connect(host="localhost", port=5432, \
+conn = psycopg2.connect(host="localhost", port=11525, \
     dbname="small_example", user="jwdeve")
 cur = conn.cursor()
 
