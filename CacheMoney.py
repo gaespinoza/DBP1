@@ -1,5 +1,6 @@
 import psycopg2
 
+grades = {'A':4, 'A-':3.7, 'B+':3.3, 'B':3, 'B-':2.7, 'C+':2.3, 'C':2, 'C-':1.7, 'D+':1.3, 'D':1, 'D-':0.7, 'F':0}
 conn = psycopg2.connect(host="localhost", port=5432, \
     dbname="small_example", user="gaespi")
 cur = conn.cursor()
@@ -71,16 +72,22 @@ def hire():
     insert_query = "insert into instructor values (%s, %s, %s, %s);"
     try:
         cur.execute(insert_query, (new_id, new_name, new_dept_name, new_salary,))
-        check = "select * from instructor;"
-        cur.execute(check)
         conn.commit()
-        for row in cur:
-            print(row[0], row[1], row[2], row[3])
     except Exception as e:
         print(e)
     print("Hire New Instructor!")
 
 def transcript():
+    s_id = input("Enter Student ID: ")
+    if not s_id.isnumeric():
+        print("ERROR - ID value not numeric")
+        return
+    q1 = "select * from student where id = %s;"
+    cur.execute(q1, (s_id,))
+    if cur.rowcount == 0:
+        print("ERROR - Student does not exist")
+        return
+
     print("Generate Transcript!")
 
 def course_list():
