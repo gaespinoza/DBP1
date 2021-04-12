@@ -73,7 +73,7 @@ def hire():
         cur.execute(insert_query, (new_id, new_name, new_dept_name, new_salary,))
         check = "select * from instructor;"
         cur.execute(check)
-        cur.commit()
+        conn.commit()
         for row in cur:
             print(row[0], row[1], row[2], row[3])
     except Exception as e:
