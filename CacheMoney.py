@@ -6,20 +6,22 @@ cur = conn.cursor()
 
 def menu_selection():
     return input("Please Select a Number: \n" \
+        "0 - Exit\n" \
         "1 - Generate Advisor List \n" \
         "2 - Hire New Instructor \n" \
         "3 - Generate Transcript \n" \
         "4 - Generate Course List \n" \
-        "5 - Register Student for Course")
+        "5 - Register Student for Course\n" \
+        "Input: ")
 def advisor_list():
-    query = "select A.s_id, S.name, I.name from advisor as A" \
+    query = "select A.s_id, S.name, I.name from advisor as A " \
             "join (" \
-            "select id, name from student)" \
-            "as S" \
-            "on A.s_id=S.id" \
+            "select id, name from student) " \
+            "as S " \
+            "on A.s_id=S.id " \
             "join (" \
-            "select id, name from instructor)" \
-            "as I" \
+            "select id, name from instructor) " \
+            "as I " \
             "on A.i_id=I.id;"
 
     cur.execute(query)
