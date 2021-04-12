@@ -106,6 +106,7 @@ def transcript():
     cur_sem = None
     i = 0
     sem_gpa = 0
+    total = 0 
     # print(f"Student ID: {cur[0][3]}")
     # print(f"{cur[0][6]}, {cur[0][7]}")
     sem = ''
@@ -117,22 +118,25 @@ def transcript():
             print(f"{row[6]}, {row[7]}")
         if row[0] != cur_sem:
             if i != 0:
-                print(f"{sem} {sem_gpa}")
+                print(f"\n{sem} {sem_gpa/total}\n")
                 for c in classes:
                     print("  ",c)
             sem = f"{row[0]} {row[1]}"
             cur_sem = row[0]
             sem_gpa = 0
+            total = 0
             classes = []
         classes.append(f"{row[4]}-{row[5]} {row[9]} ({row[8]}) {row[2]}")
         i+=1
+        sem_gpa += (grades[row[2]] * float(row[8]))
+        total += (float(row[8]))
         quality += (grades[row[2]] * float(row[8]))
         credits_tot += (float(row[8]))
     print(f"{sem} {sem_gpa}")
     for c in classes:
         print("  ",c)
 
-    print(f"Cumulative GPA {quality/credits_tot}")
+    print(f"\nCumulative GPA {quality/credits_tot}")
     
     
 
