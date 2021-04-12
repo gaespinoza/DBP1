@@ -29,7 +29,7 @@ def advisor_list():
     colnames = [desc[0] for desc in cur.description]
     print(colnames)
     for advice in cur:
-        print(advice[0], advice[1], advice[2])
+        print(advice[0]," | ", advice[1], " | ",advice[2])
     
 
 def hire():
