@@ -14,7 +14,7 @@ def menu_selection():
         "5 - Register Student for Course\n" \
         "Input: ")
 def advisor_list():
-    query = "select A.s_id, S.name, I.name from advisor as A " \
+    query = "select A.s_id, S.name as s_name, I.name as i_name from advisor as A " \
             "join (" \
             "select id, name from student) " \
             "as S " \
