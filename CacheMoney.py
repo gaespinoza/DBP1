@@ -44,7 +44,7 @@ def hire():
     new_id = input("ID of New Instructor: ") #int
     new_name = input("Name of New Instructor: ")
     new_dept_name = input("Department of New Instructor: ")
-    new_salary = input("Salary of New Instructor") #int
+    new_salary = input("Salary of New Instructor: ") #int
 
     if not new_id.isnumeric():
         print("ERROR - ID value not numeric")
@@ -56,13 +56,14 @@ def hire():
         cur.execute(q1, (new_id,))
         if cur:
             print("ERROR - Not a unique ID value")
+            
         #Check if department exists
         q2 = "select * from department where dept_name = %s;"
         cur.execute(q2, (new_dept_name,))
-        if not cur:
+        if len(cur) == 0:
             print("ERROR - Department does not exist")
 
-            
+
     print("Hire New Instructor!")
 
 def transcript():
