@@ -87,6 +87,20 @@ def transcript():
     if cur.rowcount == 0:
         print("ERROR - Student does not exist")
         return
+    #transcript query
+    tq = "select * from " \
+        "(select T.semester, T.year, T.grade, T.id, T.course_id, T.sec_id, " \
+        "S.name, S.dept_name, C.credits from student as S " \
+        "join takes as T on S.id=T.id join course as C on T.course_id=C.course_id)" \
+        " as Q where Q.id=%s order by Q.year, Q.semester desc;"
+
+    try:
+        cur.execute(tq, (s_id,))
+    except Exception as e:
+        print(e)
+        return
+    
+    
 
     print("Generate Transcript!")
 
