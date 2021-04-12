@@ -106,8 +106,8 @@ def transcript():
     cur_sem = None
     i = 0
     sem_gpa = 0
-    print(f"Student ID: {t[0][3]}")
-    print(f"{t[0][6]}, {t[0][7]}")
+    print(f"Student ID: {cur[0][3]}")
+    print(f"{t[0][6]}, {cur[0][7]}")
     sem = ''
     classes = []
 
