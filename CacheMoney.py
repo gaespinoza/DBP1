@@ -106,12 +106,15 @@ def transcript():
     cur_sem = None
     i = 0
     sem_gpa = 0
-    print(f"Student ID: {cur[0][3]}")
-    print(f"{cur[0][6]}, {cur[0][7]}")
+    # print(f"Student ID: {cur[0][3]}")
+    # print(f"{cur[0][6]}, {cur[0][7]}")
     sem = ''
     classes = []
 
     for row in cur:
+        if i == 0:
+            print(f"Student ID: {row[3]}")
+            print(f"{row[6]}, {row[7]}")
         if row[0] != cur_sem:
             if i != 0:
                 print(f"{sem} {sem_gpa}")
