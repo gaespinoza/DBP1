@@ -99,6 +99,13 @@ def transcript():
     except Exception as e:
         print(e)
         return
+
+    quality_tot = 0
+    quality = 0
+    for row in cur:
+    	quality += (grades[row[2]] * row[8])
+    	quality_tot += (4 * row[8])
+    print(f"Cumulative GPA {quality/quality_tot}")
     
     
 
