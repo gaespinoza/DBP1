@@ -132,7 +132,7 @@ def transcript():
         total += (float(row[8]))
         quality += (grades[row[2]] * float(row[8]))
         credits_tot += (float(row[8]))
-    print(f"{sem} {sem_gpa}")
+    print(f"\n{sem} {sem_gpa/total}\n")
     for c in classes:
         print("  ",c)
 
