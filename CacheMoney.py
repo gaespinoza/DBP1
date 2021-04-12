@@ -33,6 +33,36 @@ def advisor_list():
     
 
 def hire():
+    """
+    primary - id in instructor must be unique
+    foreign - dept_name must exist department
+
+    if id is unique and dept_name in departments:
+        insert id, name, dept_name salary into instructor
+    """    
+
+    new_id = input("ID of New Instructor: ") #int
+    new_name = input("Name of New Instructor: ")
+    new_dept_name = input("Department of New Instructor: ")
+    new_salary = input("Salary of New Instructor") #int
+
+    if not new_id.isnumeric():
+        print("ERROR - ID value not numeric")
+    elif not new_salary.isnumeric():
+        print("ERROR - Salary value not numeric")
+    else:
+        #Check uniqueness
+        q1 = "select * from instructor where id = %s;"
+        cur.execute(q1, (new_id,))
+        if cur:
+            print("ERROR - Not a unique ID value")
+        #Check if department exists
+        q2 = "select * from department where dept_name = %s;"
+        cur.execute(q2, (new_dept_name,))
+        if not cur:
+            print("ERROR - Department does not exist")
+
+            
     print("Hire New Instructor!")
 
 def transcript():
