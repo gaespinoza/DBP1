@@ -26,7 +26,8 @@ def advisor_list():
 
     cur.execute(query)
     print("Advisor List!")
-    print(cur.description)
+    colnames = [desc[0] for desc in cur.description]
+    print(colnames)
     for advice in cur:
         print(advice[0], advice[1], advice[2])
     
