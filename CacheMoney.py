@@ -42,30 +42,37 @@ def hire():
     """    
 
     new_id = input("ID of New Instructor: ") #int
-    new_name = input("Name of New Instructor: ")
-    new_dept_name = input("Department of New Instructor: ")
-    new_salary = input("Salary of New Instructor: ") #int
-
     if not new_id.isnumeric():
         print("ERROR - ID value not numeric")
-    elif not new_salary.isnumeric():
-        print("ERROR - Salary value not numeric")
-    elif not new_name.isalpha():
+        return
+    q1 = "select * from instructor where id = %s;"
+    cur.execute(q1, (new_id,))
+    if cur.rowcount > 0:
+        print("ERROR - Not a unique ID value")
+        return
+
+    new_name = input("Name of New Instructor: ")
+    if not new_name.isalpha():
         print("ERROR - Name is not alphabetical")
-    else:
-        #Check uniqueness
-        q1 = "select * from instructor where id = %s;"
-        cur.execute(q1, (new_id,))
-        if cur:
-            print("ERROR - Not a unique ID value")
-            
-        #Check if department exists
-        q2 = "select * from department where dept_name = %s;"
-        cur.execute(q2, (new_dept_name,))
-        if cur.rowcount == 0:
-            print("ERROR - Department does not exist")
+        return
 
+    new_dept_name = input("Department of New Instructor: ")
+    q2 = "select * from department where dept_name = %s;"
+    cur.execute(q2, (new_dept_name,))
+    if cur.rowcount == 0:
+        print("ERROR - Department does not exist")
+        return
 
+    new_salary = input("Salary of New Instructor: ") #int
+    if not new_salary.isnumeric():
+        print("ERROR - Salary value not numeric")
+        return
+
+    insert_query = "insert into instructor values (%s, %s, %s, %s);"
+    try:
+        cur.execute(insert_query, (new_id, new_name, new_dept_name, new_salary,))
+    except Exception as e:
+        print(e)
     print("Hire New Instructor!")
 
 def transcript():
