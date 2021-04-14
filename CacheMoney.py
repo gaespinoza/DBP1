@@ -188,7 +188,7 @@ class Queries:
 q = Queries()
 
 while q.input != 0:
-	self.menu_selection()
+	q.menu_selection()
 	if q.input == "0":
 		break
 	elif q.input == "1":
