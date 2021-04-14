@@ -150,9 +150,9 @@ class Queries:
 			classes = []
 			classes.append(f"{row[4]}-{row[5]} {row[9]} ({row[8]}) {row[2]}")
 			i+=1
-			sem_gpa += (grades[row[2]] * float(row[8]))
+			sem_gpa += (self.__grades[row[2]] * float(row[8]))
 			total += (float(row[8]))
-			quality += (grades[row[2]] * float(row[8]))
+			quality += (self.__grades[row[2]] * float(row[8]))
 			credits_tot += (float(row[8]))
 		output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
 		print(f"\n{sem} {round(sem_gpa/total,2)}\n")
