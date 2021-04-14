@@ -35,17 +35,16 @@ class Queries:
 	            "select id, name from instructor) " \
 	            "as I " \
 	            "on A.i_id=I.id;"
-
-	    self.__cur.execute(query)
-	    output += "Advisor List!\n"
-	    print("Advisor List!")
-	    colnames = [desc[0] for desc in self.__cur.description]
-	    print(colnames)
-	    output += "colnames\n"
-	    for advice in self.__cur:
-	    	output += '{}|{}|{}\n'.format(advice[0].ljust(6), advice[1].ljust(10), advice[2].ljust(10))
-	        print('{}|{}|{}'.format(advice[0].ljust(6), advice[1].ljust(10), advice[2].ljust(10)))
-	    return output
+		self.__cur.execute(query)
+		output += "Advisor List!\n"
+		print("Advisor List!")
+		colnames = [desc[0] for desc in self.__cur.description]
+		print(colnames)
+		output += "colnames\n"
+		for advice in self.__cur:
+			output += '{}|{}|{}\n'.format(advice[0].ljust(6), advice[1].ljust(10), advice[2].ljust(10))
+			print('{}|{}|{}'.format(advice[0].ljust(6), advice[1].ljust(10), advice[2].ljust(10)))
+		return output
 
 	def hire(self):
 		output = ""
