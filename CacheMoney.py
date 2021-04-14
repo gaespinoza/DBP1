@@ -24,7 +24,7 @@ class Queries:
 	        "Input: ")
 
 	#return a string that contains the advisor query
-	def advisor_list(self)
+	def advisor_list(self):
 		output = ''
 		query = "select A.s_id, S.name as s_name, I.name as i_name from advisor as A " \
 	            "join (" \
