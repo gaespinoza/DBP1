@@ -95,89 +95,89 @@ class Queries:
 	def transcript(self):
 		output = ""
 		s_id = input("Enter Student ID: ")
-	    if not s_id.isnumeric():
-	        print("ERROR - ID value not numeric")
-	        return output
-	    q1 = "select * from student where id = %s;"
-	    self.__cur.execute(q1, (s_id,))
-	    if self.__cur.rowcount == 0:
-	        print("ERROR - Student does not exist")
-	        return output
-	    #transcript query
-	    tq = "select * from " \
-	        "(select T.semester, T.year, T.grade, T.id, T.course_id, T.sec_id, " \
-	        "S.name, S.dept_name, C.credits, C.title from student as S " \
-	        "join takes as T on S.id=T.id join course as C on T.course_id=C.course_id)" \
-	        " as Q where Q.id=%s order by Q.year, Q.semester desc;"
+		if not s_id.isnumeric():
+		    print("ERROR - ID value not numeric")
+		    return output
+		q1 = "select * from student where id = %s;"
+		self.__cur.execute(q1, (s_id,))
+		if self.__cur.rowcount == 0:
+		    print("ERROR - Student does not exist")
+		    return output
+		#transcript query
+		tq = "select * from " \
+		    "(select T.semester, T.year, T.grade, T.id, T.course_id, T.sec_id, " \
+		    "S.name, S.dept_name, C.credits, C.title from student as S " \
+		    "join takes as T on S.id=T.id join course as C on T.course_id=C.course_id)" \
+		    " as Q where Q.id=%s order by Q.year, Q.semester desc;"
 
-	    try:
-	        self.__cur.execute(tq, (s_id,))
-	    except Exception as e:
-	        print(e)
-	        return
+		try:
+		    self.__cur.execute(tq, (s_id,))
+		except Exception as e:
+		    print(e)
+		    return
 
-	    credits_tot = 0
-	    quality = 0
+		credits_tot = 0
+		quality = 0
 
-	    cur_sem = None
-	    i = 0
-	    sem_gpa = 0
-	    total = 0 
-	    # print(f"Student ID: {cur[0][3]}")
-	    # print(f"{cur[0][6]}, {cur[0][7]}")
-	    sem = ''
-	    classes = []
+		cur_sem = None
+		i = 0
+		sem_gpa = 0
+		total = 0 
+		# print(f"Student ID: {cur[0][3]}")
+		# print(f"{cur[0][6]}, {cur[0][7]}")
+		sem = ''
+		classes = []
 
-	    for row in self.__cur:
-	        if i == 0:
-	        	output += f"\nStudent ID: {row[3]}\n"
-	        	output += f"{row[6]}, {row[7]}\n"
-	            print(f"\nStudent ID: {row[3]}")
-	            print(f"{row[6]}, {row[7]}")
-	        if row[0] != cur_sem:
-	            if i != 0:
-	            	output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
-	                print(f"\n{sem} {round(sem_gpa/total,2)}\n")
-	                for c in classes:
-	                	output += f"   {c}\n"
-	                    print("  ",c)
-	            output += f"{row[0]} {row[1]}\n"
-	            sem = f"{row[0]} {row[1]}"
-	            cur_sem = row[0]
-	            sem_gpa = 0
-	            total = 0
-	            classes = []
-	        classes.append(f"{row[4]}-{row[5]} {row[9]} ({row[8]}) {row[2]}")
-	        i+=1
-	        sem_gpa += (grades[row[2]] * float(row[8]))
-	        total += (float(row[8]))
-	        quality += (grades[row[2]] * float(row[8]))
-	        credits_tot += (float(row[8]))
-	    output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
-	    print(f"\n{sem} {round(sem_gpa/total,2)}\n")
-	    for c in classes:
-	    	output += f"    {c}\n"
-	        print("  ",c)
-	    output += f"\nCumulative GPA {round(quality/credits_tot,2)}\n\n"
-	    output += "Generate Transcript!"
-	    print(f"\nCumulative GPA {round(quality/credits_tot,2)}\n")
-	    print("Generate Transcript!")
-	    return output
+		for row in self.__cur:
+			if i == 0:
+				output += f"\nStudent ID: {row[3]}\n"
+				output += f"{row[6]}, {row[7]}\n"
+				print(f"\nStudent ID: {row[3]}")
+				print(f"{row[6]}, {row[7]}")
+			if row[0] != cur_sem:
+				if i != 0:
+					output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
+					print(f"\n{sem} {round(sem_gpa/total,2)}\n")
+					for c in classes:
+						output += f"   {c}\n"
+						print("  ",c)
+			output += f"{row[0]} {row[1]}\n"
+			sem = f"{row[0]} {row[1]}"
+			cur_sem = row[0]
+			sem_gpa = 0
+			total = 0
+			classes = []
+			classes.append(f"{row[4]}-{row[5]} {row[9]} ({row[8]}) {row[2]}")
+			i+=1
+			sem_gpa += (grades[row[2]] * float(row[8]))
+			total += (float(row[8]))
+			quality += (grades[row[2]] * float(row[8]))
+			credits_tot += (float(row[8]))
+		output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
+		print(f"\n{sem} {round(sem_gpa/total,2)}\n")
+		for c in classes:
+			output += f"    {c}\n"
+			print("  ",c)
+		output += f"\nCumulative GPA {round(quality/credits_tot,2)}\n\n"
+		output += "Generate Transcript!"
+		print(f"\nCumulative GPA {round(quality/credits_tot,2)}\n")
+		print("Generate Transcript!")
+		return output
 
 	def course_list():
 		output = ""
 
 
 		output += "Generate Course List!"
-    	print("Generate Course List!")
-    	return output
+		print("Generate Course List!")
+		return output
 
 	def register():
 		output = ""
 
 		output += "Register A Student!"
-	    print("Register A Student!")
-	    return output
+		print("Register A Student!")
+		return output
 
 
 	def __exec(query, inp, commit=0):
@@ -190,19 +190,19 @@ q = Queries()
 while q.input != 0:
 	self.menu_selection()
 	if q.input == "0":
-        break
-    elif q.input == "1":
-        q.advisor_list()
-    elif q.input == "2":
-        q.hire()
-    elif q.input == "3":
-        q.transcript()
-    elif q.input == "4":
-        q.course_list()
-    elif q.input == "5":
-        q.register()
-    else:
-        print("Bad Input!")
+		break
+	elif q.input == "1":
+	    q.advisor_list()
+	elif q.input == "2":
+	    q.hire()
+	elif q.input == "3":
+	    q.transcript()
+	elif q.input == "4":
+	    q.course_list()
+	elif q.input == "5":
+	    q.register()
+	else:
+	    print("Bad Input!")
 
 # grades = {'A':4, 'A-':3.7, 'B+':3.3, 'B':3, 'B-':2.7, 'C+':2.3, 'C':2, 'C-':1.7, 'D+':1.3, 'D':1, 'D-':0.7, 'F':0}
 # conn = psycopg2.connect(host="localhost", port=5432, \
