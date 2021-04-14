@@ -55,43 +55,42 @@ class Queries:
 	    if id is unique and dept_name in departments:
 	        insert id, name, dept_name salary into instructor
 	    """    
+		new_id = input("ID of New Instructor: ") #int
+		if not new_id.isnumeric():
+			print("ERROR - ID value not numeric")
+			return output
+		q1 = "select * from instructor where id = %s;"
+		self.__cur.execute(q1, (new_id,))
+		if self.__cur.rowcount > 0:
+		    print("ERROR - Not a unique ID value")
+		    return output
 
-	    new_id = input("ID of New Instructor: ") #int
-	    if not new_id.isnumeric():
-	        print("ERROR - ID value not numeric")
-	        return output
-	    q1 = "select * from instructor where id = %s;"
-	    self.__cur.execute(q1, (new_id,))
-	    if self.__cur.rowcount > 0:
-	        print("ERROR - Not a unique ID value")
-	        return output
+		new_name = input("Name of New Instructor: ")
+		if not new_name.isalpha():
+		    print("ERROR - Name is not alphabetical")
+		    return output
 
-	    new_name = input("Name of New Instructor: ")
-	    if not new_name.isalpha():
-	        print("ERROR - Name is not alphabetical")
-	        return output
+		new_dept_name = input("Department of New Instructor: ")
+		q2 = "select * from department where dept_name = %s;"
+		self.__cur.execute(q2, (new_dept_name,))
+		if self.__cur.rowcount == 0:
+		    print("ERROR - Department does not exist")
+		    return output
 
-	    new_dept_name = input("Department of New Instructor: ")
-	    q2 = "select * from department where dept_name = %s;"
-	    self.__cur.execute(q2, (new_dept_name,))
-	    if self.__cur.rowcount == 0:
-	        print("ERROR - Department does not exist")
-	        return output
+		new_salary = input("Salary of New Instructor: ") #int
+		if not new_salary.isnumeric():
+		    print("ERROR - Salary value not numeric")
+		    return output
 
-	    new_salary = input("Salary of New Instructor: ") #int
-	    if not new_salary.isnumeric():
-	        print("ERROR - Salary value not numeric")
-	        return output
-
-	    insert_query = "insert into instructor values (%s, %s, %s, %s);"
-	    try:
-	        self.__cur.execute(insert_query, (new_id, new_name, new_dept_name, new_salary,))
-	        self.__conn.commit()
-	    except Exception as e:
-	        print(e)
-	    output += "Hire New Instructor!"
-	    print("Hire New Instructor!")
-	   	return output
+		insert_query = "insert into instructor values (%s, %s, %s, %s);"
+		try:
+		    self.__cur.execute(insert_query, (new_id, new_name, new_dept_name, new_salary,))
+		    self.__conn.commit()
+		except Exception as e:
+		    print(e)
+		output += "Hire New Instructor!"
+		print("Hire New Instructor!")
+			return output
 
 	def transcript(self):
 		output = ""
