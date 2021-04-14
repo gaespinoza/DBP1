@@ -90,7 +90,7 @@ class Queries:
 		    print(e)
 		output += "Hire New Instructor!"
 		print("Hire New Instructor!")
-			return output
+		return output
 
 	def transcript(self):
 		output = ""
