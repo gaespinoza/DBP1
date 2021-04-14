@@ -14,7 +14,7 @@ class Queries:
 
 	#recieve user input and return the that input
 	def menu_selection(self):
-		return input("Please Select a Number: \n" \
+		self.input = input("Please Select a Number: \n" \
 	        "0 - Exit\n" \
 	        "1 - Generate Advisor List \n" \
 	        "2 - Hire New Instructor \n" \
@@ -22,6 +22,7 @@ class Queries:
 	        "4 - Generate Course List \n" \
 	        "5 - Register Student for Course\n" \
 	        "Input: ")
+		return self.input
 
 	#return a string that contains the advisor query
 	def advisor_list(self):
