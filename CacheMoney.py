@@ -193,15 +193,15 @@ while q.input != 0:
 	if q.input == "0":
 		break
 	elif q.input == "1":
-	    q.advisor_list()
+	    print("Output string\n", q.advisor_list())
 	elif q.input == "2":
-	    q.hire()
+	    print("Output String\n",q.hire())
 	elif q.input == "3":
-	    q.transcript()
+	    print("Output String\n",q.transcript())
 	elif q.input == "4":
-	    q.course_list()
+	    print("Output String\n",q.course_list())
 	elif q.input == "5":
-	    q.register()
+	    print("Output String\n",q.register())
 	else:
 	    print("Bad Input!")
 
