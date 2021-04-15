@@ -160,12 +160,12 @@ def course_list():
 
 	cur.execute(query, (semester, year,))
 
-   	for row in cur:
-   		print(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])
+	for row in cur:
+		print(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])
 
 
 
-    print("Generate Course List!")
+	print("Generate Course List!")
 
 def register():
     print("Register A Student!")
