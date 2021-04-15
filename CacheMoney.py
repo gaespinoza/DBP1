@@ -143,6 +143,28 @@ def transcript():
     print("Generate Transcript!")
 
 def course_list():
+
+	semester = input("What semester will you like to look at? \ninput: ")
+
+	year = input("What year will you like to look at? \ninput: ")
+
+
+
+	query = "select * from (select C.course_id, C.title, C.credits, S.sec_id, S.semester, S.year, S.building, S.room_number, CL.capacity, TA.enrollment, S.time_slot_id "\
+		"from course as C " \
+    	"join section as S on C.course_id = S.course_id "\
+        "join classroom as CL on S.building = CL.building and S.room_number = CL.room_number "\
+   		"join ( select T.course_id, T.sec_id, T.semester, T.year, count(*) as enrollment from takes as T "\
+   		"group by T.course_id, T.sec_id, T.semester, T.year) as TA on S.course_id = TA.course_id and S.sec_id = TA.sec_id and S.semester = TA.semester and S.year = TA.year) as Table1 "\
+   		"where Table1.semester=%s and Table1.year=%s"
+
+   	cur.execute(query, (semester, year,))
+
+   	for row in cur:
+   		print(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])
+
+
+
     print("Generate Course List!")
 
 def register():
