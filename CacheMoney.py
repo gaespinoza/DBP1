@@ -170,7 +170,7 @@ def course_list():
 
 		temp_conn.execute(sub_q,(row[10],))
 		for day in temp_conn:
-			formating += f"\n {day[1]} {day[2]}:{round(int(row[3]),2)}-{row[4]}:{row[5]}"
+			formating += f"\n {day[1]} {day[2]}:{round(int(day[3]),2)}-{day[4]}:{day[5]}"
 		print(formating)
 		print(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])
 
