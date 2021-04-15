@@ -173,7 +173,7 @@ def course_list():
 				formating += f"\n {day[1]} {day[2]}:{int(day[3]):02d}-{day[4]}:{day[5]}"
 			print(formating)
 			print(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])
-	except psycopg2.InvalidTextRepresentation:
+	except psycopg2.errors.InvalidTextRepresentation:
 		print("gets here")
 
 
