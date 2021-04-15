@@ -162,9 +162,10 @@ def course_list():
 
 	for row in cur:
 		formating = f"{row[0]}-{row[3]} {row[1]} ({row[2]}) {row[6]} {row[7]} {row[8]} {row[9]}"
-		temp = psycopg2.connect(host="localhost", port=5432, \
-		    dbname="small_example", user="gaespi")
-		temp_conn = temp.cursor()
+		#sub query to get the time slot information more easily for formatting
+		# temp = psycopg2.connect(host="localhost", port=5432, \
+		#     dbname="small_example", user="gaespi")
+		temp_conn = conn.cursor()
 
 		sub_q = "select * from time_slot where time_slot_id=%s;"
 
