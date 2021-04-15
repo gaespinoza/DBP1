@@ -152,11 +152,11 @@ def course_list():
 
 	query = "select * from (select C.course_id, C.title, C.credits, S.sec_id, S.semester, S.year, S.building, S.room_number, CL.capacity, TA.enrollment, S.time_slot_id "\
 		"from course as C " \
-    	"join section as S on C.course_id = S.course_id "\
-        "join classroom as CL on S.building = CL.building and S.room_number = CL.room_number "\
-   		"join ( select T.course_id, T.sec_id, T.semester, T.year, count(*) as enrollment from takes as T "\
-   		"group by T.course_id, T.sec_id, T.semester, T.year) as TA on S.course_id = TA.course_id and S.sec_id = TA.sec_id and S.semester = TA.semester and S.year = TA.year) as Table1 "\
-   		"where Table1.semester=%s and Table1.year=%s"
+		"join section as S on C.course_id = S.course_id "\
+		"join classroom as CL on S.building = CL.building and S.room_number = CL.room_number "\
+		"join ( select T.course_id, T.sec_id, T.semester, T.year, count(*) as enrollment from takes as T "\
+		"group by T.course_id, T.sec_id, T.semester, T.year) as TA on S.course_id = TA.course_id and S.sec_id = TA.sec_id and S.semester = TA.semester and S.year = TA.year) as Table1 "\
+		"where Table1.semester=%s and Table1.year=%s"
 
    	cur.execute(query, (semester, year,))
 
