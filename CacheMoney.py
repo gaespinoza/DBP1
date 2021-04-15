@@ -158,22 +158,23 @@ def course_list():
 		"group by T.course_id, T.sec_id, T.semester, T.year) as TA on S.course_id = TA.course_id and S.sec_id = TA.sec_id and S.semester = TA.semester and S.year = TA.year) as Table1 "\
 		"where Table1.semester=%s and Table1.year=%s;"
 
-	cur.execute(query, (semester, year,))
+	try:
+		cur.execute(query, (semester, year,))
 
-	for row in cur:
-		formating = f"{row[0]}-{row[3]} {row[1]} ({row[2]}) {row[6]} {row[7]} {row[8]} {row[9]}"
-		#sub query to get the time slot information more easily for formatting
-		# temp = psycopg2.connect(host="localhost", port=5432, \
-		#     dbname="small_example", user="gaespi")
-		temp_conn = conn.cursor()
+		for row in cur:
+			formating = f"{row[0]}-{row[3]} {row[1]} ({row[2]}) {row[6]} {row[7]} {row[8]} {row[9]}"
+			#sub query to get the time slot information more easily for formatting
+			temp_conn = conn.cursor()
 
-		sub_q = "select * from time_slot where time_slot_id=%s;"
+			sub_q = "select * from time_slot where time_slot_id=%s;"
 
-		temp_conn.execute(sub_q,(row[10],))
-		for day in temp_conn:
-			formating += f"\n {day[1]} {day[2]}:{int(day[3]):02d}-{day[4]}:{day[5]}"
-		print(formating)
-		print(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])
+			temp_conn.execute(sub_q,(row[10],))
+			for day in temp_conn:
+				formating += f"\n {day[1]} {day[2]}:{int(day[3]):02d}-{day[4]}:{day[5]}"
+			print(formating)
+			print(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])
+	except psycopg2.InvalidTextRepresentation:
+		print("gets here")
 
 
 
