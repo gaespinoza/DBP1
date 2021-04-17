@@ -191,7 +191,7 @@ def register():
     """
     #Checking valid student
     s_id = input("Student ID: ")
-    s_query = "Select * from student where id=%s;"
+    s_query = 'Select * from student where id=%s;'
     try:
         cur.execute(s_query, (s_id,))
         if cur.rowcount == 0:
@@ -207,12 +207,14 @@ def register():
     c_id = input("Course ID: ")
     sec_id = input("Section ID: ")
 
-    c_query = "Select * from section where course_id=%s and sec_id=%s and semester=%s and year=%s;"
+    c_query = 'Select * from section where course_id=%s and sec_id=%s and semester=%s and year=%s;'
     try:
         cur.execute(c_query, (c_id, sec_id, semester, year,))
         if cur.rowcount == 0:
             print('Invalid Course Information')
             return
+        for i in cur:
+            time_slot = i[6]
     except Exception as e:
         print('Error: ', e)
         return
@@ -237,7 +239,7 @@ def register():
         return
 
     #Checking if class has been taken already
-    taken_query = "select * from takes where ID=%s and course_id=%s"
+    taken_query = 'select * from takes where ID=%s and course_id=%s;'
     try:
         cur.execute(taken_query, (s_id, c_id,))
         if cur.rowcount != 0:
@@ -248,15 +250,39 @@ def register():
         return
 
     #check if course has prereqs, If so, check if student has taken courses
-    check_query = 'select * from prereq where course_id=%s'
-    pr_query = 'select * from takes where ID=%s and course_id=%s'
+    check_query = 'select * from prereq where course_id=%s;'
+    pr_query = 'select * from takes where ID=%s and course_id=%s;'
     try:
-        cur.execute(pr_query, (c_id,))
+        cur.execute(check_query, (c_id,))
         if cur.rowcount != 0:
             temp_conn = conn.cursor()
             for i in cur:
-                temp_conn.execute()
+                temp_conn.execute(pr_query, (s_id, i[1],))
+                if temp_conn.rowcount == 0:
+                    print('Student has not fulfilled prerequiste requirements')
+                    return
+    except Exception as e:
+        print('Error: ', e)
+        return
 
+    #Check if conflicting time slots
+    time_query = 'select * from section where semester=%s and year=%s and time_slot_id=%s;'
+    try:
+        cur.execute(time_query, (semester, year, time_slot,))
+        if cur.rowcount != 0:
+            print("Conflicting Time Registration")
+            return
+    except Exception as e:
+        print('Error: ', e)
+        return
+
+    #enter student registration into takes table
+    insert_statement = "insert into takes('ID','course_id','sec_id','semester','year') values(%s, %s, %s, %s, %s);"
+    try:
+        cur.execute(insert_statement, (s_id, c_id, sec_id, semester, year,))
+    except Exception as e:
+        print('Error: ', e)
+        return
     print("Register A Student!")
 
 inp = -1
