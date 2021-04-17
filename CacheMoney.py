@@ -14,6 +14,7 @@ def menu_selection():
         "4 - Generate Course List \n" \
         "5 - Register Student for Course\n" \
         "Input: ")
+
 def advisor_list():
     query = "select A.s_id, S.name as s_name, I.name as i_name from advisor as A " \
             "join (" \
@@ -64,7 +65,6 @@ def hire():
     	print("ERROR - letters placed in salary field")
     except Exception as e:
         print(str(e))
-    print("Hire New Instructor!")
 
 def transcript():
     s_id = input("Enter Student ID: ")
@@ -72,10 +72,10 @@ def transcript():
     #     print("ERROR - ID value not numeric")
     #     return
     q1 = "select * from student where id = %s;"
-    # cur.execute(q1, (s_id,))
-    # if cur.rowcount == 0:
-    #     print("ERROR - Student does not exist")
-    #     return
+    cur.execute(q1, (s_id,))
+    if cur.rowcount == 0:
+        print("ERROR - Student does not exist")
+        return
     #transcript query
     tq = "select * from " \
         "(select T.semester, T.year, T.grade, T.id, T.course_id, T.sec_id, " \
@@ -85,11 +85,11 @@ def transcript():
 
     try:
         cur.execute(tq, (s_id,))
-    
+
     except Exception as e:
         print(e)
         return
-
+    #------------------------- output the table that has been returned properly -------------------------------
     credits_tot = 0
     quality = 0
 
@@ -97,8 +97,7 @@ def transcript():
     i = 0
     sem_gpa = 0
     total = 0 
-    # print(f"Student ID: {cur[0][3]}")
-    # print(f"{cur[0][6]}, {cur[0][7]}")
+
     sem = ''
     classes = []
 
@@ -127,10 +126,6 @@ def transcript():
         print("  ",c)
 
     print(f"\nCumulative GPA {round(quality/credits_tot,2)}\n")
-    
-    
-
-    print("Generate Transcript!")
 
 def course_list():
 
@@ -166,7 +161,6 @@ def course_list():
 	except psycopg2.errors.InvalidTextRepresentation:
 		print("ERROR: Please input a number for year")
 
-	print("Generate Course List!")
 
 def register():
     print("Register A Student!")
