@@ -60,6 +60,8 @@ def hire():
     	print("ERROR - Department does not exist")
     except psycopg2.errors.CheckViolation:
     	print("ERROR - Salary value is too low")
+    except psycopg2.errors.SyntaxError:
+    	print("ERROR - letters placed in salary field")
     except Exception as e:
         print(str(e))
     print("Hire New Instructor!")
