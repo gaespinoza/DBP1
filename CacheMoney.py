@@ -42,28 +42,13 @@ def hire():
         insert id, name, dept_name salary into instructor
     """    
 
-    new_id = input("ID of New Instructor: ") #int
-    # if not new_id.isnumeric():
-    #     print("ERROR - ID value not numeric")
-    #     return
-    # q1 =surn
+    new_id = input("ID of New Instructor: ")
 
     new_name = input("Name of New Instructor: ")
-    # if not new_name.isalpha():
-    #     print("ERROR - Name is not alphabetical")
-    #     return
 
     new_dept_name = input("Department of New Instructor: ")
-    # q2 = "select * from department where dept_name = %s;"
-    # cur.execute(q2, (new_dept_name,))
-    # if cur.rowcount == 0:
-    #     print("ERROR - Department does not exist")
-    #     return
 
-    new_salary = input("Salary of New Instructor: ") #int
-    # if not new_salary.isnumeric():
-    #     print("ERROR - Salary value not numeric")
-    #     return
+    new_salary = input("Salary of New Instructor: ")
 
     insert_query = "insert into instructor values (%s, %s, %s, %s);"
     try:
@@ -73,8 +58,10 @@ def hire():
     	print("ERROR - ID value not numeric")
     except psycopg2.errors.ForeignKeyViolation:
     	print("ERROR - Department does not exist")
+    except psycopg2.errors.CheckViolation:
+    	print("ERROR - Salary value is too low")
     except Exception as e:
-        print(e)
+        print(str(e))
     print("Hire New Instructor!")
 
 def transcript():
