@@ -268,13 +268,13 @@ def register():
     #Check if conflicting time slots
     check_query = 'select * from takes where ID=%s;'
     # time_query = 'select * from section where semester=%s and year=%s and time_slot_id=%s;'
-    time_query = 'select * from section where course_id = %s and ID = %s;'
+    time_query = 'select * from section where course_id = %s;'
     try:
         cur.execute(check_query, (s_id,))
         temp_conn = conn.cursor()
         if cur.rowcount > 0:
             for i in cur:
-                temp_conn.execute(time_query, (i[1], i[0],))
+                temp_conn.execute(time_query, (i[1],))
                 for j in temp_conn:
                     if j[1] == semester and j[3] == year and j[6] == time_slot:
                         print("Conflicting Registration Error")
