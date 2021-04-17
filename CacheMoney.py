@@ -46,11 +46,7 @@ def hire():
     # if not new_id.isnumeric():
     #     print("ERROR - ID value not numeric")
     #     return
-    q1 = "select * from instructor where id = %s;"
-    cur.execute(q1, (new_id,))
-    if cur.rowcount > 0:
-        print("ERROR - Not a unique ID value")
-        return
+    # q1 =surn
 
     new_name = input("Name of New Instructor: ")
     if not new_name.isalpha():
