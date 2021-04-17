@@ -57,52 +57,38 @@ class Queries:
 	        insert id, name, dept_name salary into instructor
 	    """    
 		new_id = input("ID of New Instructor: ") #int
-		if not new_id.isnumeric():
-			print("ERROR - ID value not numeric")
-			return output
-		q1 = "select * from instructor where id = %s;"
-		self.__cur.execute(q1, (new_id,))
-		if self.__cur.rowcount > 0:
-		    print("ERROR - Not a unique ID value")
-		    return output
 
 		new_name = input("Name of New Instructor: ")
-		if not new_name.isalpha():
-		    print("ERROR - Name is not alphabetical")
-		    return output
 
 		new_dept_name = input("Department of New Instructor: ")
 		q2 = "select * from department where dept_name = %s;"
-		self.__cur.execute(q2, (new_dept_name,))
-		if self.__cur.rowcount == 0:
-		    print("ERROR - Department does not exist")
-		    return output
 
 		new_salary = input("Salary of New Instructor: ") #int
-		if not new_salary.isnumeric():
-		    print("ERROR - Salary value not numeric")
-		    return output
 
 		insert_query = "insert into instructor values (%s, %s, %s, %s);"
 		try:
 		    self.__cur.execute(insert_query, (new_id, new_name, new_dept_name, new_salary,))
 		    self.__conn.commit()
+		except psycopg2.errors.UniqueViolation:
+			output = "ERROR - ID value not numeric"
+		except psycopg2.errors.ForeignKeyViolation:
+			output = "ERROR - Department does not exist"
+		except psycopg2.errors.CheckViolation:
+			output = "ERROR - Salary value is too low"
+		except psycopg2.errors.SyntaxError:
+			output = "ERROR - letters placed in salary field"
 		except Exception as e:
-		    print(e)
-		output += "Hire New Instructor!"
-		print("Hire New Instructor!")
+			output = str(e)
 		return output
 
 	def transcript(self):
 		output = ""
 		s_id = input("Enter Student ID: ")
-		if not s_id.isnumeric():
-		    print("ERROR - ID value not numeric")
-		    return output
+
 		q1 = "select * from student where id = %s;"
 		self.__cur.execute(q1, (s_id,))
 		if self.__cur.rowcount == 0:
-		    print("ERROR - Student does not exist")
+		    output = "ERROR - Student does not exist"
 		    return output
 		#transcript query
 		tq = "select * from " \
@@ -114,8 +100,9 @@ class Queries:
 		try:
 		    self.__cur.execute(tq, (s_id,))
 		except Exception as e:
-		    print(e)
-		    return
+		    output = str(e)
+		    return output
+		#------------------------- output the table that has been returned properly -------------------------------
 
 		credits_tot = 0
 		quality = 0
@@ -124,8 +111,6 @@ class Queries:
 		i = 0
 		sem_gpa = 0
 		total = 0 
-		# print(f"Student ID: {cur[0][3]}")
-		# print(f"{cur[0][6]}, {cur[0][7]}")
 		sem = ''
 		classes = []
 
@@ -133,15 +118,11 @@ class Queries:
 			if i == 0:
 				output += f"\nStudent ID: {row[3]}\n"
 				output += f"{row[6]}, {row[7]}\n"
-				print(f"\nStudent ID: {row[3]}")
-				print(f"{row[6]}, {row[7]}")
 			if row[0] != cur_sem:
 				if i != 0:
 					output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
-					print(f"\n{sem} {round(sem_gpa/total,2)}\n")
 					for c in classes:
 						output += f"   {c}\n"
-						print("  ",c)
 				output += f"{row[0]} {row[1]}\n"
 				sem = f"{row[0]} {row[1]}"
 				cur_sem = row[0]
@@ -155,25 +136,44 @@ class Queries:
 			quality += (self.__grades[row[2]] * float(row[8]))
 			credits_tot += (float(row[8]))
 		output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
-		print(f"\n{sem} {round(sem_gpa/total,2)}\n")
 		for c in classes:
 			output += f"    {c}\n"
-			print("  ",c)
 		output += f"\nCumulative GPA {round(quality/credits_tot,2)}\n\n"
-		output += "Generate Transcript!"
-		print(f"\nCumulative GPA {round(quality/credits_tot,2)}\n")
-		print("Generate Transcript!")
 		return output
 
-	def course_list():
+	def course_list(self):
 		output = ""
+		semester = input("What semester will you like to look at? \ninput: ")
+
+		year = input("What year will you like to look at? \ninput: ")
 
 
-		output += "Generate Course List!"
-		print("Generate Course List!")
+		query = "select * from (select C.course_id, C.title, C.credits, S.sec_id, S.semester, S.year, S.building, S.room_number, CL.capacity, TA.enrollment, S.time_slot_id "\
+		    "from course as C " \
+		    "join section as S on C.course_id = S.course_id "\
+		    "join classroom as CL on S.building = CL.building and S.room_number = CL.room_number "\
+		    "join ( select T.course_id, T.sec_id, T.semester, T.year, count(*) as enrollment from takes as T "\
+		    "group by T.course_id, T.sec_id, T.semester, T.year) as TA on S.course_id = TA.course_id and S.sec_id = TA.sec_id and S.semester = TA.semester and S.year = TA.year) as Table1 "\
+		    "where Table1.semester=%s and Table1.year=%s;"
+		try:
+			cur.execute(query, (semester, year,))
+
+			for row in cur:
+				formating = f"{row[0]}-{row[3]} {row[1]} ({row[2]}) {row[6]} {row[7]} {row[8]} {row[9]}"
+				#sub query to get the time slot information more easily for formatting
+				temp_conn = conn.cursor()
+
+				sub_q = "select * from time_slot where time_slot_id=%s;"
+
+				temp_conn.execute(sub_q,(row[10],))
+				for day in temp_conn:
+					formating += f"\n {day[1]} {day[2]}:{int(day[3]):02d}-{day[4]}:{day[5]}"
+				output += formating
+		except psycopg2.errors.InvalidTextRepresentation:
+			output = "ERROR: Please input a number for year"
 		return output
 
-	def register():
+	def register(self):
 		output = ""
 
 		output += "Register A Student!"
@@ -219,6 +219,7 @@ def menu_selection():
         "4 - Generate Course List \n" \
         "5 - Register Student for Course\n" \
         "Input: ")
+
 def advisor_list():
     query = "select A.s_id, S.name as s_name, I.name as i_name from advisor as A " \
             "join (" \
@@ -247,46 +248,34 @@ def hire():
         insert id, name, dept_name salary into instructor
     """    
 
-    new_id = input("ID of New Instructor: ") #int
-    if not new_id.isnumeric():
-        print("ERROR - ID value not numeric")
-        return
-    q1 = "select * from instructor where id = %s;"
-    cur.execute(q1, (new_id,))
-    if cur.rowcount > 0:
-        print("ERROR - Not a unique ID value")
-        return
+    new_id = input("ID of New Instructor: ")
 
     new_name = input("Name of New Instructor: ")
-    if not new_name.isalpha():
-        print("ERROR - Name is not alphabetical")
-        return
 
     new_dept_name = input("Department of New Instructor: ")
-    q2 = "select * from department where dept_name = %s;"
-    cur.execute(q2, (new_dept_name,))
-    if cur.rowcount == 0:
-        print("ERROR - Department does not exist")
-        return
 
-    new_salary = input("Salary of New Instructor: ") #int
-    if not new_salary.isnumeric():
-        print("ERROR - Salary value not numeric")
-        return
+    new_salary = input("Salary of New Instructor: ")
 
     insert_query = "insert into instructor values (%s, %s, %s, %s);"
     try:
         cur.execute(insert_query, (new_id, new_name, new_dept_name, new_salary,))
         conn.commit()
+    except psycopg2.errors.UniqueViolation:
+    	print("ERROR - ID value not numeric")
+    except psycopg2.errors.ForeignKeyViolation:
+    	print("ERROR - Department does not exist")
+    except psycopg2.errors.CheckViolation:
+    	print("ERROR - Salary value is too low")
+    except psycopg2.errors.SyntaxError:
+    	print("ERROR - letters placed in salary field")
     except Exception as e:
-        print(e)
-    print("Hire New Instructor!")
+        print(str(e))
 
 def transcript():
     s_id = input("Enter Student ID: ")
-    if not s_id.isnumeric():
-        print("ERROR - ID value not numeric")
-        return
+    # if not s_id.isnumeric():
+    #     print("ERROR - ID value not numeric")
+    #     return
     q1 = "select * from student where id = %s;"
     cur.execute(q1, (s_id,))
     if cur.rowcount == 0:
@@ -301,10 +290,11 @@ def transcript():
 
     try:
         cur.execute(tq, (s_id,))
+
     except Exception as e:
         print(e)
         return
-
+    #------------------------- output the table that has been returned properly -------------------------------
     credits_tot = 0
     quality = 0
 
@@ -312,8 +302,7 @@ def transcript():
     i = 0
     sem_gpa = 0
     total = 0 
-    # print(f"Student ID: {cur[0][3]}")
-    # print(f"{cur[0][6]}, {cur[0][7]}")
+
     sem = ''
     classes = []
 
@@ -342,10 +331,41 @@ def transcript():
         print("  ",c)
 
     print(f"\nCumulative GPA {round(quality/credits_tot,2)}\n")
-    print("Generate Transcript!")
 
 def course_list():
-    print("Generate Course List!")
+
+	semester = input("What semester will you like to look at? \ninput: ")
+
+	year = input("What year will you like to look at? \ninput: ")
+
+
+
+	query = "select * from (select C.course_id, C.title, C.credits, S.sec_id, S.semester, S.year, S.building, S.room_number, CL.capacity, TA.enrollment, S.time_slot_id "\
+		"from course as C " \
+		"join section as S on C.course_id = S.course_id "\
+		"join classroom as CL on S.building = CL.building and S.room_number = CL.room_number "\
+		"join ( select T.course_id, T.sec_id, T.semester, T.year, count(*) as enrollment from takes as T "\
+		"group by T.course_id, T.sec_id, T.semester, T.year) as TA on S.course_id = TA.course_id and S.sec_id = TA.sec_id and S.semester = TA.semester and S.year = TA.year) as Table1 "\
+		"where Table1.semester=%s and Table1.year=%s;"
+
+	try:
+		cur.execute(query, (semester, year,))
+
+		for row in cur:
+			formating = f"{row[0]}-{row[3]} {row[1]} ({row[2]}) {row[6]} {row[7]} {row[8]} {row[9]}"
+			#sub query to get the time slot information more easily for formatting
+			temp_conn = conn.cursor()
+
+			sub_q = "select * from time_slot where time_slot_id=%s;"
+
+			temp_conn.execute(sub_q,(row[10],))
+			for day in temp_conn:
+				formating += f"\n {day[1]} {day[2]}:{int(day[3]):02d}-{day[4]}:{day[5]}"
+			print(formating)
+			print(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])
+	except psycopg2.errors.InvalidTextRepresentation:
+		print("ERROR: Please input a number for year")
+
 
 def register():
     print("Register A Student!")
