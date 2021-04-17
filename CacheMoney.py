@@ -68,14 +68,14 @@ def hire():
 
 def transcript():
     s_id = input("Enter Student ID: ")
-    if not s_id.isnumeric():
-        print("ERROR - ID value not numeric")
-        return
+    # if not s_id.isnumeric():
+    #     print("ERROR - ID value not numeric")
+    #     return
     q1 = "select * from student where id = %s;"
-    cur.execute(q1, (s_id,))
-    if cur.rowcount == 0:
-        print("ERROR - Student does not exist")
-        return
+    # cur.execute(q1, (s_id,))
+    # if cur.rowcount == 0:
+    #     print("ERROR - Student does not exist")
+    #     return
     #transcript query
     tq = "select * from " \
         "(select T.semester, T.year, T.grade, T.id, T.course_id, T.sec_id, " \
@@ -85,6 +85,7 @@ def transcript():
 
     try:
         cur.execute(tq, (s_id,))
+    
     except Exception as e:
         print(e)
         return
