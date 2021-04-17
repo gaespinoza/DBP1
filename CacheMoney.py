@@ -38,13 +38,10 @@ class Queries:
 	            "on A.i_id=I.id;"
 		self.__cur.execute(query)
 		output += "Advisor List!\n"
-		print("Advisor List!")
 		colnames = [desc[0] for desc in self.__cur.description]
-		print(colnames)
 		output += "colnames\n"
 		for advice in self.__cur:
 			output += '{}|{}|{}\n'.format(advice[0].ljust(6), advice[1].ljust(10), advice[2].ljust(10))
-			print('{}|{}|{}'.format(advice[0].ljust(6), advice[1].ljust(10), advice[2].ljust(10)))
 		return output
 
 	def hire(self):
@@ -156,9 +153,9 @@ class Queries:
 		    "group by T.course_id, T.sec_id, T.semester, T.year) as TA on S.course_id = TA.course_id and S.sec_id = TA.sec_id and S.semester = TA.semester and S.year = TA.year) as Table1 "\
 		    "where Table1.semester=%s and Table1.year=%s;"
 		try:
-			cur.execute(query, (semester, year,))
+			self.__cur.execute(query, (semester, year,))
 
-			for row in cur:
+			for row in self.__cur:
 				formating = f"{row[0]}-{row[3]} {row[1]} ({row[2]}) {row[6]} {row[7]} {row[8]} {row[9]}"
 				#sub query to get the time slot information more easily for formatting
 				temp_conn = conn.cursor()
