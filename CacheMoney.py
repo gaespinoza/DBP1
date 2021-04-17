@@ -280,6 +280,7 @@ def register():
     insert_statement = "insert into takes('ID','course_id','sec_id','semester','year') values(%s, %s, %s, %s, %s);"
     try:
         cur.execute(insert_statement, (s_id, c_id, sec_id, semester, year,))
+        conn.commit()
     except Exception as e:
         print('Error: ', e)
         return
