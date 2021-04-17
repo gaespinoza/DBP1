@@ -43,9 +43,9 @@ def hire():
     """    
 
     new_id = input("ID of New Instructor: ") #int
-    if not new_id.isnumeric():
-        print("ERROR - ID value not numeric")
-        return
+    # if not new_id.isnumeric():
+    #     print("ERROR - ID value not numeric")
+    #     return
     q1 = "select * from instructor where id = %s;"
     cur.execute(q1, (new_id,))
     if cur.rowcount > 0:
