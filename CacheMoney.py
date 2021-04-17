@@ -54,11 +54,11 @@ def hire():
     #     return
 
     new_dept_name = input("Department of New Instructor: ")
-    q2 = "select * from department where dept_name = %s;"
-    cur.execute(q2, (new_dept_name,))
-    if cur.rowcount == 0:
-        print("ERROR - Department does not exist")
-        return
+    # q2 = "select * from department where dept_name = %s;"
+    # cur.execute(q2, (new_dept_name,))
+    # if cur.rowcount == 0:
+    #     print("ERROR - Department does not exist")
+    #     return
 
     new_salary = input("Salary of New Instructor: ") #int
     if not new_salary.isnumeric():
