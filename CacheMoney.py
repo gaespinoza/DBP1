@@ -69,6 +69,8 @@ def hire():
     try:
         cur.execute(insert_query, (new_id, new_name, new_dept_name, new_salary,))
         conn.commit()
+    except psycopg2.errors.UniqueViolation:
+    	print("ERROR - ID value not numeric")
     except Exception as e:
         print(e)
     print("Hire New Instructor!")
