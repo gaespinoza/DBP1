@@ -156,7 +156,7 @@ class Queries:
 			self.__cur.execute(query, (semester, year,))
 
 			for row in self.__cur:
-				formating = f"{row[0]}-{row[3]} {row[1]} ({row[2]}) {row[6]} {row[7]} {row[8]} {row[9]}"
+				formating = f"\n{row[0]}-{row[3]} {row[1]} ({row[2]}) {row[6]} {row[7]} {row[8]} {row[9]}"
 				#sub query to get the time slot information more easily for formatting
 				temp_conn = self.__conn.cursor()
 
