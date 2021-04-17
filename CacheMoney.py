@@ -1,5 +1,5 @@
 import psycopg2
-
+sems = {'spring':'Spring', 'summer':'Summer','fall':'Fall','winter':'Winter'}
 grades = {'A':4, 'A-':3.7, 'B+':3.3, 'B':3, 'B-':2.7, 'C+':2.3, 'C':2, 'C-':1.7, 'D+':1.3, 'D':1, 'D-':0.7, 'F':0}
 conn = psycopg2.connect(host="localhost", port=5432, \
     dbname="small_example", user="gaespi")
@@ -179,6 +179,84 @@ def course_list():
 	print("Generate Course List!")
 
 def register():
+    """
+    1 - check if student id is valid (table: student)
+    2 - check if course is valid with given semester, year, course id and section id (table: section)
+    3 - check if course has space (query from 4)
+    4 - check that student has not taken course (table: takes)
+    5 - check if course has prerequistes (table: prereq)
+    6 - check if student has all prerequistes (table: prereq -> table: takes)
+    7 - check if student has no conflicting courses (takes with id=s_id->section check time_slot_id=/=c_id)
+    8 - register student for course in takes table(insert into takes)
+    """
+    #Checking valid student
+    s_id = input("Student ID: ")
+    s_query = "Select * from student where id=%s;"
+    try:
+        cur.execute(s_query, (s_id,))
+        if cur.rowcount == 0:
+            print('Invalid Student ID')
+            return
+    except Exception as e:
+        print("Error: ", e)
+        return
+
+    #checking valid course
+    semester = input("Semester of Course: ")
+    year = input("Year of registration: ")
+    c_id = input("Course ID: ")
+    sec_id = input("Section ID: ")
+
+    c_query = "Select * from section where course_id=%s and sec_id=%s and semester=%s and year=%s;"
+    try:
+        cur.execute(c_query, (c_id, sec_id, semester, year,))
+        if cur.rowcount == 0:
+            print('Invalid Course Information')
+            return
+    except Exception as e:
+        print('Error: ', e)
+        return
+
+    #Checking course capacity
+    cap_query = "select capacity, enrollment from (select C.course_id, C.title, C.credits, S.sec_id, S.semester, S.year, S.building, S.room_number, CL.capacity, TA.enrollment, S.time_slot_id "\
+		"from course as C " \
+		"join section as S on C.course_id = S.course_id "\
+		"join classroom as CL on S.building = CL.building and S.room_number = CL.room_number "\
+		"join ( select T.course_id, T.sec_id, T.semester, T.year, count(*) as enrollment from takes as T "\
+		"group by T.course_id, T.sec_id, T.semester, T.year) as TA on S.course_id = TA.course_id and S.sec_id = TA.sec_id and S.semester = TA.semester and S.year = TA.year) as Table1 "\
+		"where Table1.course_id = %s and Table1.sec_id=%s and Table1.semester=%s and Table1.year=%s;"
+
+    try:
+        cur.execute(cap_query, (c_id, sec_id, semester, year,))
+        for i in cur:
+            if i[0] < i[1]:
+                print("No seats available")
+                return
+    except Exception as e:
+        print('Error: ', e)
+        return
+
+    #Checking if class has been taken already
+    taken_query = "select * from takes where ID=%s and course_id=%s"
+    try:
+        cur.execute(taken_query, (s_id, c_id,))
+        if cur.rowcount != 0:
+            print("Student has already taken course")
+            return
+    except Exception as e:
+        print("Error: ", e)
+        return
+
+    #check if course has prereqs, If so, check if student has taken courses
+    check_query = 'select * from prereq where course_id=%s'
+    pr_query = 'select * from takes where ID=%s and course_id=%s'
+    try:
+        cur.execute(pr_query, (c_id,))
+        if cur.rowcount != 0:
+            temp_conn = conn.cursor()
+            for i in cur:
+                temp_conn.execute()
+
     print("Register A Student!")
 
 inp = -1
