@@ -61,9 +61,9 @@ def hire():
     #     return
 
     new_salary = input("Salary of New Instructor: ") #int
-    if not new_salary.isnumeric():
-        print("ERROR - Salary value not numeric")
-        return
+    # if not new_salary.isnumeric():
+    #     print("ERROR - Salary value not numeric")
+    #     return
 
     insert_query = "insert into instructor values (%s, %s, %s, %s);"
     try:
@@ -71,6 +71,8 @@ def hire():
         conn.commit()
     except psycopg2.errors.UniqueViolation:
     	print("ERROR - ID value not numeric")
+    except psycopg2.errors.ForeignKeyViolation:
+    	print("ERROR - Department does not exist")
     except Exception as e:
         print(e)
     print("Hire New Instructor!")
