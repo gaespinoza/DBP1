@@ -268,7 +268,7 @@ def register():
     #Check if conflicting time slots
     check_query = 'select * from takes where ID=%s;'
     # time_query = 'select * from section where semester=%s and year=%s and time_slot_id=%s;'
-    time_query = 'select * from section where course_id = %s and id = %s;'
+    time_query = 'select * from section where course_id = %s and ID = %s;'
     try:
         cur.execute(check_query, (s_id,))
         temp_conn = conn.cursor()
