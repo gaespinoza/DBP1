@@ -49,9 +49,9 @@ def hire():
     # q1 =surn
 
     new_name = input("Name of New Instructor: ")
-    if not new_name.isalpha():
-        print("ERROR - Name is not alphabetical")
-        return
+    # if not new_name.isalpha():
+    #     print("ERROR - Name is not alphabetical")
+    #     return
 
     new_dept_name = input("Department of New Instructor: ")
     q2 = "select * from department where dept_name = %s;"
