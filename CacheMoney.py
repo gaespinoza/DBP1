@@ -120,7 +120,10 @@ class Queries:
 				output += f"{row[6]}, {row[7]}\n"
 			if row[0] != cur_sem:
 				if i != 0:
-					output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
+					if total != 0:
+						output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
+					else:
+						output += f"\n{sem} {round(0.00,2)}\n\n"
 					for c in classes:
 						output += f"   {c}\n"
 				output += f"{row[0]} {row[1]}\n"
