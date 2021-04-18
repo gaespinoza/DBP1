@@ -206,10 +206,8 @@ class Queries:
 				return output 
 			for i in self.__cur:
 				time_slot = i[6]
-		except psycopg2.errors.DatatypeMismatch:
-			output = "ERROR - letters placed in salary field"
 		except Exception as e:
-			output = f"Error: {str(e)}"
+			output = f"Error: Invalid input for year"
 			return output
 
 	    #Checking course capacity
@@ -277,12 +275,6 @@ class Queries:
 		output += "Registration Successful!"
 		return output
 
-
-	def __exec(query, inp, commit=0):
-		try:
-			self.__cur(query, inp)
-		except Exception as e:
-			print(e)
 q = Queries()
 
 while q.input != 0:
