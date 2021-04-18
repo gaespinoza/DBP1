@@ -126,7 +126,7 @@ class Queries:
 						output += f"\n{sem} {round(0.00,2)}\n\n"
 					for c in classes:
 						output += f"   {c}\n"
-				output += f"{row[0]} {row[1]}\n"
+				#output += f"{row[0]} {row[1]}\n"
 				sem = f"{row[0]} {row[1]}"
 				cur_sem = row[0]
 				sem_gpa = 0
@@ -139,7 +139,6 @@ class Queries:
 				total += (float(row[8]))
 				quality += (self.__grades[row[2]] * float(row[8]))
 				credits_tot += (float(row[8]))
-		print("total:", total)
 		if total != 0:
 			output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
 		else:
