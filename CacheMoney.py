@@ -136,7 +136,10 @@ class Queries:
 				total += (float(row[8]))
 				quality += (self.__grades[row[2]] * float(row[8]))
 				credits_tot += (float(row[8]))
-		output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
+		if total != 0:
+			output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
+		else:
+			output += f"\n{sem} {round(0.00,2)}\n\n"
 		for c in classes:
 			output += f"    {c}\n"
 		output += f"\nCumulative GPA {round(quality/credits_tot,2)}\n\n"
