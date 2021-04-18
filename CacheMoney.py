@@ -206,7 +206,7 @@ class Queries:
 				return output 
 			for i in self.__cur:
 				time_slot = i[6]
-		except psycopg2.errors.SyntaxError:
+		except psycopg2.errors.DataException:
 			output = "ERROR - letters placed in salary field"
 		except Exception as e:
 			output = f"Error: {e}"
@@ -221,60 +221,49 @@ class Queries:
 			"group by T.course_id, T.sec_id, T.semester, T.year) as TA on S.course_id = TA.course_id and S.sec_id = TA.sec_id and S.semester = TA.semester and S.year = TA.year) as Table1 "\
 			"where Table1.course_id = %s and Table1.sec_id=%s and Table1.semester=%s and Table1.year=%s;"
 
-		try:
-			self.__cur.execute(cap_query, (c_id, sec_id, semester, year,))
-			for i in self.__cur:
-				if i[0] < i[1]:
-					output = "No seats available"
-					return output 
-		except Exception as e:
-			output = f"Error: {e}"
-			return output 
+
+		self.__cur.execute(cap_query, (c_id, sec_id, semester, year,))
+		for i in self.__cur:
+			if i[0] < i[1]:
+				output = "No seats available"
+				return output 
 
 		#Checking if class has been taken already
 		taken_query = 'select * from takes where ID=%s and course_id=%s;'
-		try:
-			self.__cur.execute(taken_query, (s_id, c_id,))
-			if self.__cur.rowcount != 0:
-				output = "Student has already taken course"
-				return output 
-		except Exception as e:
-			output = f"Error: {e}"
+
+		self.__cur.execute(taken_query, (s_id, c_id,))
+		if self.__cur.rowcount != 0:
+			output = "Student has already taken course"
 			return output 
 
 	    #check if course has prereqs, If so, check if student has taken courses
 		check_query = 'select * from prereq where course_id=%s;'
 		pr_query = 'select * from takes where ID=%s and course_id=%s;'
-		try:
-			self.__cur.execute(check_query, (c_id,))
-			if self.__cur.rowcount != 0:
-				temp_conn = self.__conn.cursor()
-				for i in self.__cur:
-					temp_conn.execute(pr_query, (s_id, i[1],))
-					if temp_conn.rowcount == 0:
-						output = 'Student has not fulfilled prerequiste requirements' 
-						return output 
-		except Exception as e:
-			output = f"Error: {e}"
-			return output 
+
+		self.__cur.execute(check_query, (c_id,))
+		if self.__cur.rowcount != 0:
+			temp_conn = self.__conn.cursor()
+			for i in self.__cur:
+				temp_conn.execute(pr_query, (s_id, i[1],))
+				if temp_conn.rowcount == 0:
+					output = 'Student has not fulfilled prerequiste requirements' 
+					return output 
+
 
 		#Check if conflicting time slots
 		check_query = 'select * from takes where ID=%s;'
 		# time_query = 'select * from section where semester=%s and year=%s and time_slot_id=%s;'
 		time_query = 'select * from section where course_id = %s;'
-		try:
-			self.__cur.execute(check_query, (s_id,))
-			temp_conn = self.__conn.cursor()
-			if self.__cur.rowcount > 0:
-				for i in self.__cur:
-					temp_conn.execute(time_query, (i[1],))
-					for j in temp_conn:
-						if j[1] == semester and j[3] == year and j[6] == time_slot:
-							output = "Conflicting Registration Error"
-							return output 
-		except Exception as e:
-			output = f"Error: {e}"
-			return output 
+
+		self.__cur.execute(check_query, (s_id,))
+		temp_conn = self.__conn.cursor()
+		if self.__cur.rowcount > 0:
+			for i in self.__cur:
+				temp_conn.execute(time_query, (i[1],))
+				for j in temp_conn:
+					if j[1] == semester and j[3] == year and j[6] == time_slot:
+						output = "Conflicting Registration Error"
+						return output 
 
 	    #enter student registration into takes table
 		insert_statement = "insert into takes values(%s, %s, %s, %s, %s);"
