@@ -206,10 +206,10 @@ class Queries:
 				return output 
 			for i in self.__cur:
 				time_slot = i[6]
-		except psycopg2.errors.DataException:
+		except psycopg2.errors.DatatypeMismatch:
 			output = "ERROR - letters placed in salary field"
 		except Exception as e:
-			output = f"Error: {e}"
+			output = f"Error: {str(e)}"
 			return output
 
 	    #Checking course capacity
