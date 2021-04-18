@@ -6,7 +6,7 @@ sems = {'spring':'Spring', 'summer':'Summer','fall':'Fall','winter':'Winter'}
 class Queries:
 	def __init__(self):
 		self.__grades =  {'A':4, 'A-':3.7, 'B+':3.3, 'B':3, 'B-':2.7, \
-			'C+':2.3, 'C':2, 'C-':1.7, 'D+':1.3, 'D':1, 'D-':0.7, 'F':0}
+			'C+':2.3, 'C':2, 'C-':1.7, 'D+':1.3, 'D':1, 'D-':0.7, 'F':0, None:""}
 
 		self.__conn = psycopg2.connect(host="localhost", port=5432, \
     		dbname="small_example", user="gaespi")
@@ -243,7 +243,7 @@ class Queries:
 			self.__cur.execute(check_query, (c_id,))
 			if self.__cur.rowcount != 0:
 				temp_conn = conn.cursor()
-				for i in cur:
+				for i in self.__cur:
 					temp_conn.execute(pr_query, (s_id, i[1],))
 					if temp_conn.rowcount == 0:
 						output = 'Student has not fulfilled prerequiste requirements' 
