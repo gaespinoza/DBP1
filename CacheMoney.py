@@ -200,7 +200,7 @@ class Queries:
 			if self.__cur.rowcount == 0:
 				output = 'Invalid Course Information'
 				return output 
-			for i in cur:
+			for i in self.__cur:
 				time_slot = i[6]
 		except Exception as e:
 			output = f"Error: {e}"
@@ -217,7 +217,7 @@ class Queries:
 
 		try:
 			self.__cur.execute(cap_query, (c_id, sec_id, semester, year,))
-			for i in cur:
+			for i in self.__cur:
 				if i[0] < i[1]:
 					output = "No seats available"
 					return output 
