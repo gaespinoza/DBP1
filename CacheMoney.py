@@ -242,7 +242,7 @@ class Queries:
 		try:
 			self.__cur.execute(check_query, (c_id,))
 			if self.__cur.rowcount != 0:
-				temp_conn = conn.cursor()
+				temp_conn = self.__conn.cursor()
 				for i in self.__cur:
 					temp_conn.execute(pr_query, (s_id, i[1],))
 					if temp_conn.rowcount == 0:
@@ -258,7 +258,7 @@ class Queries:
 		time_query = 'select * from section where course_id = %s;'
 		try:
 			self.__cur.execute(check_query, (s_id,))
-			temp_conn = conn.cursor()
+			temp_conn = self.__conn.cursor()
 			if self.__cur.rowcount > 0:
 				for i in self.__cur:
 					temp_conn.execute(time_query, (i[1],))
@@ -274,7 +274,7 @@ class Queries:
 		insert_statement = "insert into takes values(%s, %s, %s, %s, %s);"
 		try:
 			self.__cur.execute(insert_statement, (s_id, c_id, sec_id, semester, year,))
-			conn.commit()
+			self.__conn.commit()
 		except Exception as e:
 			output = f"Error: {e}"
 			return output 
