@@ -79,6 +79,7 @@ class Queries:
 			output = "ERROR - letters placed in salary field"
 		except Exception as e:
 			output = str(e)
+		output += "Hire Successful!"
 		return output
 
 	def transcript(self):
@@ -185,14 +186,10 @@ class Queries:
 		output = ""
 		s_id = input("Student ID: ")
 		s_query = 'Select * from student where id=%s;'
-		try:
-			self.__cur.execute(s_query, (s_id,))
-			if self.__cur.rowcount == 0:
-				output = 'Invalid Student ID'
-				return output 
-		except Exception as e:
 
-			output = f"Error: {e}"
+		self.__cur.execute(s_query, (s_id,))
+		if self.__cur.rowcount == 0:
+			output = 'Error - Invalid Student ID'
 			return output 
 
 	    #checking valid course
@@ -209,6 +206,8 @@ class Queries:
 				return output 
 			for i in self.__cur:
 				time_slot = i[6]
+		except psycopg2.errors.SyntaxError:
+			output = "ERROR - letters placed in salary field"
 		except Exception as e:
 			output = f"Error: {e}"
 			return output
