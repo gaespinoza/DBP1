@@ -260,7 +260,7 @@ class Queries:
 			self.__cur.execute(check_query, (s_id,))
 			temp_conn = conn.cursor()
 			if self.__cur.rowcount > 0:
-				for i in cur:
+				for i in self.__cur:
 					temp_conn.execute(time_query, (i[1],))
 					for j in temp_conn:
 						if j[1] == semester and j[3] == year and j[6] == time_slot:
