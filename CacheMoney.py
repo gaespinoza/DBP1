@@ -6,7 +6,7 @@ sems = {'spring':'Spring', 'summer':'Summer','fall':'Fall','winter':'Winter'}
 class Queries:
 	def __init__(self):
 		self.__grades =  {'A':4, 'A-':3.7, 'B+':3.3, 'B':3, 'B-':2.7, \
-			'C+':2.3, 'C':2, 'C-':1.7, 'D+':1.3, 'D':1, 'D-':0.7, 'F':0, None:""}
+			'C+':2.3, 'C':2, 'C-':1.7, 'D+':1.3, 'D':1, 'D-':0.7, 'F':0, None:100}
 
 		self.__conn = psycopg2.connect(host="localhost", port=5432, \
     		dbname="small_example", user="gaespi")
@@ -131,10 +131,11 @@ class Queries:
 				classes = []
 			classes.append(f"{row[4]}-{row[5]} {row[9]} ({row[8]}) {row[2]}")
 			i+=1
-			sem_gpa += (self.__grades[row[2]] * float(row[8]))
-			total += (float(row[8]))
-			quality += (self.__grades[row[2]] * float(row[8]))
-			credits_tot += (float(row[8]))
+			if self.__grades[row[2]] != 100:
+				sem_gpa += (self.__grades[row[2]] * float(row[8]))
+				total += (float(row[8]))
+				quality += (self.__grades[row[2]] * float(row[8]))
+				credits_tot += (float(row[8]))
 		output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
 		for c in classes:
 			output += f"    {c}\n"
