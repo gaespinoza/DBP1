@@ -74,7 +74,7 @@ class Queries:
 		    self.__conn.commit()
 		    output += "Hire Successful!"
 		except psycopg2.errors.UniqueViolation:
-			output = "ERROR - ID value not numeric"
+			output = "ERROR - ID value not valid"
 		except psycopg2.errors.ForeignKeyViolation:
 			output = "ERROR - Department does not exist"
 		except psycopg2.errors.CheckViolation:
