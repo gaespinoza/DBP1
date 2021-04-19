@@ -42,8 +42,8 @@ class Queries:
 		self.__cur.execute(query)
 		output += "Advisor List!\n"
 		colnames = [desc[0] for desc in self.__cur.description]
-		output += f"{colnames}\n"
-		'{}|{}|{}\n'.format(colnames[0].ljust(6), colnames[1].ljust(10), colnames[2].ljust(10))
+		#output += f"{colnames}\n"
+		output += '{}|{}|{}\n'.format(colnames[0].ljust(6), colnames[1].ljust(10), colnames[2].ljust(10))
 		for advice in self.__cur:
 			output += '{}|{}|{}\n'.format(advice[0].ljust(6), advice[1].ljust(10), advice[2].ljust(10))
 		return output
