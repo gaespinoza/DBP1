@@ -30,7 +30,7 @@ class Queries:
 	#return a string that contains the advisor query
 	def advisor_list(self):
 		output = ''
-		query = "select A.s_id as Student_ID, S.name as Student_name, I.name as Instructor_name from advisor as A " \
+		query = "select A.s_id as Student_ID, S.name as Student, I.name as Instructor from advisor as A " \
 	            "join (" \
 	            "select id, name from student) " \
 	            "as S " \
@@ -42,10 +42,10 @@ class Queries:
 		self.__cur.execute(query)
 		output += "Advisor List!\n"
 		colnames = [desc[0] for desc in self.__cur.description]
-		#output += f"{colnames}\n"
+
 		output += '{}|{}|{}\n'.format(colnames[0].center(15), colnames[1].center(15), colnames[2].center(15))
 		for advice in self.__cur:
-			output += '{}|{}|{}\n'.format(advice[0].center(15), advice[1].center(16), advice[2].center(15))
+			output += '{}|{}|{}\n'.format(advice[0].center(15), advice[1].center(15), advice[2].center(15))
 		return output
 
 	def hire(self):
@@ -67,9 +67,12 @@ class Queries:
 		new_salary = input("Salary of New Instructor: ") #int
 
 		insert_query = "insert into instructor values (%s, %s, %s, %s);"
+
+		#create exceptions for each variations of errors that may arise for different inputs
 		try:
 		    self.__cur.execute(insert_query, (new_id, new_name, new_dept_name, new_salary,))
 		    self.__conn.commit()
+		    output += "Hire Successful!"
 		except psycopg2.errors.UniqueViolation:
 			output = "ERROR - ID value not numeric"
 		except psycopg2.errors.ForeignKeyViolation:
@@ -80,7 +83,6 @@ class Queries:
 			output = "ERROR - letters placed in salary field"
 		except Exception as e:
 			output = str(e)
-		output += "Hire Successful!"
 		return output
 
 	def transcript(self):
@@ -104,6 +106,7 @@ class Queries:
 		except Exception as e:
 		    output = str(e)
 		    return output
+
 		#------------------------- output the table that has been returned properly -------------------------------
 
 		credits_tot = 0
@@ -115,11 +118,14 @@ class Queries:
 		total = 0 
 		sem = ''
 		classes = []
-
+		#iterate through each semester to update the Cumulative GPA and Semester GPA
 		for row in self.__cur:
+			#only add on the first iteration for proper formatting for student information
 			if i == 0:
 				output += f"\nStudent ID: {row[3]}\n"
 				output += f"{row[6]}, {row[7]}\n"
+			#If the row does not match the current semester we have a new semester and should
+			#prepare the formatting to take into account a new section
 			if row[0] != cur_sem:
 				if i != 0:
 					if total != 0:
@@ -128,19 +134,21 @@ class Queries:
 						output += f"\n{sem} {round(0.00,2)}\n\n"
 					for c in classes:
 						output += f"   {c}\n"
-				#output += f"{row[0]} {row[1]}\n"
 				sem = f"{row[0]} {row[1]}"
 				cur_sem = row[0]
 				sem_gpa = 0
 				total = 0
 				classes = []
+			#add each course to the list of classes the student has taken in the current semester
 			classes.append(f"{row[4]}-{row[5]} {row[9]} ({row[8]}) {row[2]}")
 			i+=1
+			#If the student has a grade for the course, take it into account for calculation of the GPA
 			if self.__grades[row[2]] != 100:
 				sem_gpa += (self.__grades[row[2]] * float(row[8]))
 				total += (float(row[8]))
 				quality += (self.__grades[row[2]] * float(row[8]))
 				credits_tot += (float(row[8]))
+		#this is for a special case when the student has not completed a course for the current semester
 		if total != 0:
 			output += f"\n{sem} {round(sem_gpa/total,2)}\n\n"
 		else:
@@ -169,7 +177,9 @@ class Queries:
 
 			for row in self.__cur:
 				formating = f"\n{row[0]}-{row[3]} {row[1]} ({row[2]}) {row[6]} {row[7]} {row[8]} {row[9]}"
+
 				#sub query to get the time slot information more easily for formatting
+
 				temp_conn = self.__conn.cursor()
 
 				sub_q = "select * from time_slot where time_slot_id=%s;"
@@ -183,6 +193,16 @@ class Queries:
 		return output
 
 	def register(self):
+		"""
+	    1 - check if student id is valid (table: student)
+	    2 - check if course is valid with given semester, year, course id and section id (table: section)
+	    3 - check if course has space (query from 4)
+	    4 - check that student has not taken course (table: takes)
+	    5 - check if course has prerequistes (table: prereq)
+	    6 - check if student has all prerequistes (table: prereq -> table: takes)
+	    7 - check if student has no conflicting courses (takes with id=s_id->section check time_slot_id=/=c_id)
+	    8 - register student for course in takes table(insert into takes)
+    	"""
 
 		output = ""
 		s_id = input("Student ID: ")
